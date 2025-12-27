@@ -1,0 +1,203 @@
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Tambah Konten Materi
+                </h2>
+                <p class="text-sm text-gray-600 mt-1">Course: {{ $course->nama_course }}</p>
+            </div>
+            <a href="{{ route('teacher.courses.show', $course->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:outline-none transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Kembali
+            </a>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-md sm:rounded-lg">
+                <!-- Header Card -->
+                <div class="p-6 bg-gradient-to-r from-green-500 to-teal-500 text-white">
+                    <div class="flex items-center">
+                        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3 mr-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">Tambah Konten Baru</h3>
+                            <p class="text-green-100 text-sm mt-1">Buat materi pembelajaran untuk course: <strong>{{ $course->nama_course }}</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Alert -->
+                @if ($errors->any())
+                <div class="mx-6 mt-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-red-800 mb-2">Terdapat beberapa kesalahan:</p>
+                            <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Form -->
+                <form action="{{ route('teacher.contents.store', $course->id) }}" method="POST" class="p-6 space-y-6">
+                    @csrf
+
+                    <!-- Course Info Box -->
+                    <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg">
+                        <div class="flex items-center">
+                            <svg class="h-5 w-5 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <p class="text-sm text-purple-700 font-medium">Menambahkan konten untuk course: <strong>{{ $course->nama_course }}</strong></p>
+                                <p class="text-xs text-purple-600 mt-1">
+                                    Kategori: {{ $course->kategori->kategori }} • 
+                                    Total Siswa: {{ $course->students->count() }} siswa
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Judul Konten -->
+                    <div>
+                        <label for="judul" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Judul Konten <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                                </svg>
+                            </div>
+                            <input 
+                                type="text" 
+                                name="judul" 
+                                id="judul" 
+                                value="{{ old('judul') }}"
+                                class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition @error('judul') border-red-500 @enderror" 
+                                placeholder="Contoh: Pengenalan HTML & CSS"
+                                required
+                            >
+                        </div>
+                        @error('judul')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-2 text-sm text-gray-500">
+                            💡 Gunakan judul yang jelas dan deskriptif
+                        </p>
+                    </div>
+
+                    <!-- Konten Materi -->
+                    <div>
+                        <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Konten Materi <span class="text-red-500">*</span>
+                        </label>
+                        <textarea 
+                            name="deskripsi" 
+                            id="deskripsi" 
+                            rows="12" 
+                            class="block w-full px-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition @error('deskripsi') border-red-500 @enderror"
+                            placeholder="Tulis materi pembelajaran di sini...
+
+Contoh:
+1. Pendahuluan
+   - Apa itu HTML?
+   - Mengapa HTML penting?
+
+2. Materi Inti
+   - Tag dasar HTML
+   - Struktur dokumen HTML
+   
+3. Latihan
+   - Buat halaman web sederhana"
+                            required
+                        >{{ old('deskripsi') }}</textarea>
+                        @error('deskripsi')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-2 text-sm text-gray-500">
+                            💡 Susun materi secara terstruktur dan mudah dipahami
+                        </p>
+                    </div>
+
+                    <!-- Tips Box -->
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-blue-700 font-medium">📝 Tips Membuat Konten Berkualitas:</p>
+                                <ul class="mt-2 text-sm text-blue-700 space-y-1 list-disc list-inside">
+                                    <li>Gunakan bahasa yang mudah dipahami</li>
+                                    <li>Buat struktur materi yang jelas (pendahuluan, inti, kesimpulan)</li>
+                                    <li>Tambahkan contoh praktis atau studi kasus</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+                        <a href="{{ route('teacher.courses.show', $course->id) }}" class="inline-flex items-center px-6 py-3 bg-gray-200 border border-transparent rounded-lg font-semibold text-sm text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Batal
+                        </a>
+                        <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 border border-transparent rounded-lg font-semibold text-sm text-white uppercase tracking-widest hover:from-green-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition shadow-lg hover:shadow-xl">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Simpan Konten
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Additional Info Card -->
+            <div class="mt-6 bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Informasi Konten</h3>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <p><strong>📚 Course:</strong> {{ $course->nama_course }}</p>
+                            <p><strong>🏷️ Kategori:</strong> {{ $course->kategori->kategori }}</p>
+                            <p><strong>👥 Jumlah Siswa:</strong> {{ $course->students->count() }} siswa terdaftar</p>
+                            <p><strong>📅 Periode:</strong> {{ \Carbon\Carbon::parse($course->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($course->tanggal_selesai)->format('d M Y') }}</p>
+                            <p><strong>📊 Status Course:</strong> 
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold {{ $course->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    {{ $course->is_active ? 'Aktif' : 'Nonaktif' }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
